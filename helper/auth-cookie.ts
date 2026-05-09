@@ -1,8 +1,8 @@
-import { createAccessToken } from '@/features/auth/auth-token';
+import { createAccessToken } from '@/services/auth/auth-token';
 import { cookies } from 'next/headers';
 
 type AuthCookieInput = {
-  userId: string | number;
+  userId: number;
   email: string;
 };
 

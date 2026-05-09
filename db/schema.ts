@@ -56,9 +56,29 @@ export const workspaceMembers = pgTable(
   }),
 );
 
+export const todos = pgTable('todos', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  title: varchar('title', { length: 255 }).notNull(),
+  isCompleted: boolean('is_completed').default(false).notNull(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 export const userRelations = relations(users, ({ many }) => ({
   ownedWorkspaces: many(workspaces),
   workspaceMembers: many(workspaceMembers),
+
+  todos: many(todos),
+}));
+
+export const todosRelation = relations(todos, ({ one }) => ({
+  user: one(users, {
+    fields: [todos.userId],
+    references: [users.id],
+  }),
 }));
 
 export const workspaceRelations = relations(workspaces, ({ one, many }) => ({

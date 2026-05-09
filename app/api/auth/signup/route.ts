@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { signupSchema } from '../auth.validation';
+import { signupSchema } from '../../../../services/auth/auth.schema';
 import {
   sendBadRequest,
   sendConflict,
@@ -9,7 +9,7 @@ import {
 import {
   findUserByEmail,
   createUserWithWorkspace,
-} from '@/features/auth/auth.service';
+} from '@/services/auth/auth.service';
 import { makeSlug } from '@/utils/slugify';
 import { setAuthCookie } from '@/helper/auth-cookie';
 

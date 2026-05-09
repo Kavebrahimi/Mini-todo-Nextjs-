@@ -1,6 +1,8 @@
 import { db } from '@/db';
 import { users, workspaceMembers, workspaces } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { cookies } from 'next/headers';
+import { verifyAccessToken } from './auth-token';
 
 type createUserWithWorkspaceInput = {
   name: string;
@@ -63,4 +65,36 @@ export const createUserWithWorkspace = async ({
       workspace: createdWorkSpace,
     };
   });
+};
+
+export const findUserById = async (userId: number) => {
+  const [user] = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      createdAt: users.createdAt,
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  return user;
+};
+
+export const getCurrentUser = async () => {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
+
+  if (!accessToken) return null;
+
+  try {
+    const payload = await verifyAccessToken(accessToken);
+    const userId = payload.userId;
+
+    if (typeof userId !== 'number') return null;
+    const user = await findUserById(userId);
+
+    return user ?? null;
+  } catch {}
 };

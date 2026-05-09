@@ -5,7 +5,7 @@ const accessTokenSecret = new TextEncoder().encode(
 );
 
 type AccessTokenPayload = {
-  userId: string | number;
+  userId:  number;
   email: string;
 };
 
@@ -17,7 +17,7 @@ export const createAccessToken = async (payload: AccessTokenPayload) => {
     .sign(accessTokenSecret);
 };
 
-export const verifyAccessToken = async (token: string) => {
+export const verifyAccessToken = async (token: string ) => {
   const { payload } = await jwtVerify(token, accessTokenSecret);
   return payload;
 };
